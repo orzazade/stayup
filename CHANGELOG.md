@@ -16,9 +16,10 @@ First public release.
 - **Timed sessions** — keep active for 1h / 2h / 4h, then auto-pause (with a notification).
 - **Work-hours schedule** — optionally only stay active Mon–Fri during set hours.
 - **Keeps your Mac awake** — while active, holds an IOKit power assertion so the Mac
-  doesn't idle-sleep and you stay online even with the screen off.
-- **Keep screen on** (optional toggle) — also prevent display sleep, or let the screen
-  sleep (and lock) while you stay online.
+  doesn't idle-sleep (the nudge keeps firing even with the screen off).
+- **Keep screen on** (optional toggle) — prevents display sleep so the Mac never *locks*;
+  needed to stay green while away, because macOS ignores synthetic input once the screen
+  is locked (with it off, you go Away when it locks).
 - **Colored menu bar status icon** reflecting state at a glance.
 - **Launch at login** and a global hotkey (⌘⇧U) to toggle.
 - **Accessibility onboarding** with a clear permission gate.

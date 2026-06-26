@@ -57,8 +57,10 @@ step away.
 - **Actually keeps you Available** — resets the input-idle timer, not just the display.
 - **Timed sessions** — "keep me active for 1h / 2h / 4h" for that one long meeting, then auto-off.
 - **Work-hours schedule** — only active Mon–Fri 9–6 (configurable), if you want.
-- **Keeps your Mac awake** — holds a power assertion while active, so it stays online even with the screen off.
-- **Keep screen on** (optional) — keep the display lit too, or let it sleep while you stay online.
+- **Keeps your Mac awake** — holds a power assertion while active so it never idle-sleeps.
+- **Keep screen on** — turn this on to stay green even when you walk away: it keeps the display
+  lit so the Mac never *locks*. (macOS ignores the nudge once the screen is locked, so with this
+  off you'll go Away when it locks — which is the honest outcome.)
 - **Invisible** — net-zero cursor movement, only fires when you're genuinely idle.
 - **Private** — zero network calls, zero telemetry, ever.
 - **Native & tiny** — pure SwiftUI, no Electron, no dependencies beyond a hotkey lib.
@@ -110,8 +112,9 @@ Enable **stayup** under System Settings → Privacy & Security → Accessibility
 The nudge updates the combined-session idle counter that Electron apps query via
 `powerMonitor.getSystemIdleTime()`, so your status stays Available. No cursor
 jump, no `cliclick`, no daemon. The power assertion keeps the Mac awake so the
-nudge keeps firing; with **Keep screen on** off, the display can still sleep (and
-lock) while you stay online.
+nudge keeps firing. One caveat from macOS: **once the screen locks, the OS ignores
+synthetic input**, so you go Away. Turn on **Keep screen on** to prevent the lock
+and stay green while away from your desk.
 
 ## 🤝 Contributing
 

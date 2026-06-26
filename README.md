@@ -13,6 +13,10 @@
 
 **A macOS menu bar app with one big green power button. Tap it, and your Mac stops reporting you as idle while you're still working — so Teams and Slack don't flip you to Away.**
 
+<br/>
+
+<img src=".github/assets/states.png" alt="stayup states: Active, Paused, Setup" width="640" />
+
 </div>
 
 ---
@@ -82,21 +86,30 @@ Enable **stayup** under System Settings → Privacy & Security → Accessibility
 - Click the menu bar icon → tap the **green power button** to start.
 - Pick a duration under **Keep active for** for a timed session.
 - Open **Advanced ▾** for presence detection, work-hours schedule, idle
-  threshold, and launch-at-login.
+  threshold, **Keep screen on**, and launch-at-login.
 - Global hotkey: **⌘⇧U** toggles Active/Paused from anywhere.
+
+<div align="center">
+<img src=".github/assets/advanced.png" alt="stayup Advanced settings" width="560" />
+</div>
 
 ## 🔍 How it works
 
 ```
+ while Active:
+   hold an IOKit power assertion   → the Mac won't idle-sleep
+                                     (so it keeps working even with the screen off)
  every 1s:
    read input-idle seconds  (CGEventSource, the same value Teams reads)
-   if active and not locked and idle ≥ threshold:
+   if idle ≥ threshold:
        post mouseMoved +1px, then mouseMoved back   ← net-zero nudge
 ```
 
 The nudge updates the combined-session idle counter that Electron apps query via
 `powerMonitor.getSystemIdleTime()`, so your status stays Available. No cursor
-jump, no `cliclick`, no daemon.
+jump, no `cliclick`, no daemon. The power assertion keeps the Mac awake so the
+nudge keeps firing; with **Keep screen on** off, the display can still sleep (and
+lock) while you stay online.
 
 ## 🤝 Contributing
 

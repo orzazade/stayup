@@ -43,6 +43,13 @@ cp "$BINARY_PATH" "$APP_BUNDLE/Contents/MacOS/$BINARY_NAME"
 sed "s/<string>1.0.0<\/string>/<string>$VERSION<\/string>/g" \
     "$SCRIPT_DIR/Info.plist" > "$APP_BUNDLE/Contents/Info.plist"
 
+# App icon
+if [ -f "$SCRIPT_DIR/AppIcon.icns" ]; then
+    cp "$SCRIPT_DIR/AppIcon.icns" "$APP_BUNDLE/Contents/Resources/AppIcon.icns"
+else
+    echo "Warning: AppIcon.icns not found — run: swift dist/make-icon.swift dist && (regenerate .icns)"
+fi
+
 echo ""
 echo "Build complete: $APP_BUNDLE"
 lipo -info "$APP_BUNDLE/Contents/MacOS/$BINARY_NAME"

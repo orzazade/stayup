@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src=".github/assets/icon.png" alt="stayup" width="128" />
+
 # stayup
 
 ### Stay green in Teams & Slack — one tap.

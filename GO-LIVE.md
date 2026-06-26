@@ -13,10 +13,9 @@ Legend: `[ ]` todo · `[~]` partial · `[x]` done
 - [ ] Decide bundle id stays `com.scifi.stayup` (or switch to a domain you own, e.g. `space.scifilab.stayup`)
 
 ## 1. Assets & branding  ← "fix assets"
-- [ ] **App icon** — design the power-circle mark; produce `AppIcon.icns` with all sizes
-      (16, 32, 64, 128, 256, 512 @1x/@2x). Add an `Assets.xcassets` AppIcon set or ship `.icns`.
-- [ ] Wire icon into the bundle: add `CFBundleIconFile`/`CFBundleIconName` to `dist/Info.plist`
-      and copy the `.icns`/`Assets.car` in `dist/build.sh`
+- [x] **App icon** — dark squircle + glowing green power button. `dist/make-icon.swift` →
+      `dist/AppIcon.icns` (all sizes via iconutil). Source-reproducible.
+- [x] Wire icon into the bundle: `CFBundleIconFile=AppIcon` in `dist/Info.plist`, copied in `dist/build.sh`
 - [ ] **Menu bar glyph** — confirm the colored power-circle reads well at 1x on light + dark menu bars;
       consider a custom template variant if SF Symbol feels off
 - [ ] **README hero** — logo image + one-line pitch (currently text only)

@@ -1,0 +1,23 @@
+# Planning artifacts (local-only)
+.planning/
+
+# macOS
+.DS_Store
+
+# Xcode
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+*.hmap
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# Build artifacts
+dist/*.zip
+dist/*.app/

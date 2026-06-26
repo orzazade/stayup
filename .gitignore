@@ -21,3 +21,4 @@ Package.resolved
 # Build artifacts
 dist/*.zip
 dist/*.app/
+dist/icon-master.png

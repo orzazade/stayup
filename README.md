@@ -46,9 +46,10 @@ One tap on the big green power button. That's the whole app.
 ### What stayup honestly is
 
 stayup **never reads, sets, or reports your Teams/Slack status.** It can't — it
-makes no network calls of any kind. It does exactly one thing: stop the OS from
-marking you idle after brief inactivity while you're still at your machine. It's
-honest by construction, because it makes no presence claim at all.
+makes no network calls of any kind. All it does is keep your Mac from going idle
+**while you've switched it on**. It's honest by construction: it makes no presence
+claim, it just stops a false-idle signal. You're in control — turn it off when you
+step away.
 
 ## ✨ Features
 
@@ -56,7 +57,8 @@ honest by construction, because it makes no presence claim at all.
 - **Actually keeps you Available** — resets the input-idle timer, not just the display.
 - **Timed sessions** — "keep me active for 1h / 2h / 4h" for that one long meeting, then auto-off.
 - **Work-hours schedule** — only active Mon–Fri 9–6 (configurable), if you want.
-- **Screen-lock aware** — stops nudging the moment you lock your screen.
+- **Keeps your Mac awake** — holds a power assertion while active, so it stays online even with the screen off.
+- **Keep screen on** (optional) — keep the display lit too, or let it sleep while you stay online.
 - **Invisible** — net-zero cursor movement, only fires when you're genuinely idle.
 - **Private** — zero network calls, zero telemetry, ever.
 - **Native & tiny** — pure SwiftUI, no Electron, no dependencies beyond a hotkey lib.

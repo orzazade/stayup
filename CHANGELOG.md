@@ -15,7 +15,10 @@ First public release.
   Teams/Slack read, so you stay Available without the cursor visibly moving.
 - **Timed sessions** — keep active for 1h / 2h / 4h, then auto-pause (with a notification).
 - **Work-hours schedule** — optionally only stay active Mon–Fri during set hours.
-- **Screen-lock aware** — stops nudging the moment you lock your screen; resumes on unlock.
+- **Keeps your Mac awake** — while active, holds an IOKit power assertion so the Mac
+  doesn't idle-sleep and you stay online even with the screen off.
+- **Keep screen on** (optional toggle) — also prevent display sleep, or let the screen
+  sleep (and lock) while you stay online.
 - **Colored menu bar status icon** reflecting state at a glance.
 - **Launch at login** and a global hotkey (⌘⇧U) to toggle.
 - **Accessibility onboarding** with a clear permission gate.

@@ -104,7 +104,7 @@ final class ActivityController: ObservableObject {
 
     var menuBarSymbol: String {
         if !isTrusted { return "exclamationmark.circle" }
-        return isActive ? "powercircle.fill" : "powercircle"
+        return isActive ? "power.circle.fill" : "power.circle"
     }
 
     // MARK: Settings (read live from UserDefaults; the UI writes them via @AppStorage)
@@ -125,10 +125,14 @@ final class ActivityController: ObservableObject {
 
     // MARK: The tick
     private func startTicking() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+        let t = Timer(timeInterval: 1.0, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tick() }
         }
-        timer?.tolerance = 0.2
+        t.tolerance = 0.2
+        // .common modes so the tick keeps firing while the popover/menu is open
+        // (a default-mode timer freezes during UI tracking).
+        RunLoop.main.add(t, forMode: .common)
+        timer = t
         tick()
     }
 
@@ -172,20 +176,10 @@ final class ActivityController: ObservableObject {
 
     // MARK: State persistence
     private func restoreState() {
-        let raw = UserDefaults.standard.string(forKey: "mode") ?? "paused"
-        switch raw {
-        case "always":
-            mode = .activeAlways
-        case "timed":
-            if let end = UserDefaults.standard.object(forKey: "timerEnd") as? Date, end > Date() {
-                mode = .activeTimed
-                timerEnd = end
-            } else {
-                mode = .paused
-            }
-        default:
-            mode = .paused
-        }
+        // Always start Paused. The user explicitly turns stayup on each session —
+        // granting permission or launching should never silently start nudging.
+        mode = .paused
+        timerEnd = nil
         persist()
     }
 

@@ -21,30 +21,37 @@ struct MenuView: View {
                 permissionGate
             }
 
-            Divider().padding(.vertical, 4)
+            Divider().padding(.top, 12).padding(.bottom, 7)
 
             HStack {
                 if controller.isTrusted {
                     Button(showAdvanced ? "Advanced ▴" : "Advanced ▾") {
-                        withAnimation(.easeInOut(duration: 0.15)) { showAdvanced.toggle() }
+                        showAdvanced.toggle()
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(.secondary)
                 } else {
-                    Button("Why this permission?") { controller.requestPermission() }
+                    Button("Why this?") { controller.requestPermission() }
                         .buttonStyle(.plain)
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Button("Quit") { NSApplication.shared.terminate(nil) }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.secondary)
-                    .keyboardShortcut("q")
+                Button {
+                    NSApplication.shared.terminate(nil)
+                } label: {
+                    HStack(spacing: 5) {
+                        Text("Quit").foregroundStyle(.secondary)
+                        Text("⌘Q").foregroundStyle(.tertiary).font(.system(size: 11))
+                    }
+                }
+                .buttonStyle(.plain)
+                .keyboardShortcut("q")
             }
             .font(.system(size: 12.5))
             .padding(.horizontal, 4)
+            .padding(.bottom, 2)
         }
-        .padding(12)
+        .padding(14)
         .frame(width: 264)
     }
 
@@ -54,19 +61,30 @@ struct MenuView: View {
         HStack {
             Text("stayup").font(.system(size: 13, weight: .semibold))
             Spacer()
+            if controller.isTrusted {
+                Button {
+                    showAdvanced.toggle()
+                } label: {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 13))
+                        .foregroundStyle(.tertiary)
+                }
+                .buttonStyle(.plain)
+            }
         }
         .padding(.horizontal, 2)
-        .padding(.bottom, 4)
+        .padding(.bottom, 6)
     }
 
     private var grantedBody: some View {
         VStack(spacing: 6) {
             PowerButton(look: look) { controller.toggle() }
-                .padding(.top, 6)
+                .padding(.top, 2)
 
             Text(controller.isActive ? "Active" : "Paused")
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(controller.isActive ? .primary : .secondary)
+                .padding(.top, 4)
 
             statusLine
                 .font(.system(size: 12))
@@ -88,7 +106,7 @@ struct MenuView: View {
             .padding(.top, 6)
 
             if showAdvanced {
-                AdvancedView().transition(.opacity)
+                AdvancedView()
             }
         }
     }
@@ -105,21 +123,33 @@ struct MenuView: View {
     }
 
     private var permissionGate: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 0) {
             PowerButton(look: .setup) { controller.requestPermission() }
-                .padding(.top, 6)
+                .padding(.top, 2)
             Text("Setup needed")
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(Color.orange)
+                .padding(.top, 4)
             Text("stayup nudges the cursor a pixel when you're idle, so apps like Teams don't mark you Away while you're still working. It never reads or sets your status.")
                 .font(.system(size: 12))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .lineSpacing(2)
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, 4)
-            Button("Grant Accessibility Access…") { controller.requestPermission() }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.small)
+                .padding(.horizontal, 6)
+                .padding(.top, 10)
+            Button {
+                controller.requestPermission()
+            } label: {
+                Text("Grant Accessibility Access…")
+                    .font(.system(size: 12.5, weight: .medium))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 7)
+                    .background(Color.blue, in: RoundedRectangle(cornerRadius: 7))
+            }
+            .buttonStyle(.plain)
+            .padding(.top, 12)
         }
     }
 

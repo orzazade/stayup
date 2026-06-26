@@ -1,24 +1,13 @@
 import SwiftUI
-import AppKit
 
 @main
 struct stayupApp: App {
-    @StateObject private var controller = ActivityController.shared
-    @StateObject private var launchAtLogin = LaunchAtLoginManager()
-    @StateObject private var hotkey = HotkeyManager()
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
-    init() {
-        Task { await NotificationService.shared.requestPermission() }
-    }
-
+    // The menu bar presence is managed by AppDelegate (NSStatusItem + NSPopover,
+    // for the native arrow). This empty Settings scene keeps the app an
+    // LSUIElement accessory with no main window.
     var body: some Scene {
-        MenuBarExtra {
-            MenuView()
-                .environmentObject(controller)
-                .environmentObject(launchAtLogin)
-        } label: {
-            Image(systemName: controller.menuBarSymbol)
-        }
-        .menuBarExtraStyle(.window)
+        Settings { EmptyView() }
     }
 }

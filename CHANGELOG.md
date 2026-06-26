@@ -15,11 +15,9 @@ First public release.
   Teams/Slack read, so you stay Available without the cursor visibly moving.
 - **Timed sessions** — keep active for 1h / 2h / 4h, then auto-pause (with a notification).
 - **Work-hours schedule** — optionally only stay active Mon–Fri during set hours.
-- **Keeps your Mac awake** — while active, holds an IOKit power assertion so the Mac
-  doesn't idle-sleep (the nudge keeps firing even with the screen off).
-- **Keep screen on** (optional toggle) — prevents display sleep so the Mac never *locks*;
-  needed to stay green while away, because macOS ignores synthetic input once the screen
-  is locked (with it off, you go Away when it locks).
+- **Stays green when you step away** — while active, holds an IOKit power assertion that
+  keeps the screen on so the Mac never locks (macOS ignores synthetic input once locked, so
+  keeping the display awake is the only way the nudge can keep you Available hands-off).
 - **Colored menu bar status icon** reflecting state at a glance.
 - **Launch at login** and a global hotkey (⌘⇧U) to toggle.
 - **Accessibility onboarding** with a clear permission gate.

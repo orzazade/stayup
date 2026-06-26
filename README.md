@@ -57,10 +57,9 @@ step away.
 - **Actually keeps you Available** — resets the input-idle timer, not just the display.
 - **Timed sessions** — "keep me active for 1h / 2h / 4h" for that one long meeting, then auto-off.
 - **Work-hours schedule** — only active Mon–Fri 9–6 (configurable), if you want.
-- **Keeps your Mac awake** — holds a power assertion while active so it never idle-sleeps.
-- **Keep screen on** — turn this on to stay green even when you walk away: it keeps the display
-  lit so the Mac never *locks*. (macOS ignores the nudge once the screen is locked, so with this
-  off you'll go Away when it locks — which is the honest outcome.)
+- **Stays green even when you step away** — while active it keeps the screen on (so the Mac
+  never locks) and nudges, so Teams keeps showing you Available. (macOS ignores the nudge once
+  the screen is locked — keeping the screen on is the only way to stay green hands-off.)
 - **Invisible** — net-zero cursor movement, only fires when you're genuinely idle.
 - **Private** — zero network calls, zero telemetry, ever.
 - **Native & tiny** — pure SwiftUI, no Electron, no dependencies beyond a hotkey lib.
@@ -90,7 +89,7 @@ Enable **stayup** under System Settings → Privacy & Security → Accessibility
 - Click the menu bar icon → tap the **green power button** to start.
 - Pick a duration under **Keep active for** for a timed session.
 - Open **Advanced ▾** for presence detection, work-hours schedule, idle
-  threshold, **Keep screen on**, and launch-at-login.
+  threshold, and launch-at-login.
 - Global hotkey: **⌘⇧U** toggles Active/Paused from anywhere.
 
 <div align="center">
@@ -101,8 +100,7 @@ Enable **stayup** under System Settings → Privacy & Security → Accessibility
 
 ```
  while Active:
-   hold an IOKit power assertion   → the Mac won't idle-sleep
-                                     (so it keeps working even with the screen off)
+   hold an IOKit power assertion   → keeps the screen on, so the Mac never locks
  every 1s:
    read input-idle seconds  (CGEventSource, the same value Teams reads)
    if idle ≥ threshold:
@@ -111,10 +109,9 @@ Enable **stayup** under System Settings → Privacy & Security → Accessibility
 
 The nudge updates the combined-session idle counter that Electron apps query via
 `powerMonitor.getSystemIdleTime()`, so your status stays Available. No cursor
-jump, no `cliclick`, no daemon. The power assertion keeps the Mac awake so the
-nudge keeps firing. One caveat from macOS: **once the screen locks, the OS ignores
-synthetic input**, so you go Away. Turn on **Keep screen on** to prevent the lock
-and stay green while away from your desk.
+jump, no `cliclick`, no daemon. Keeping the screen on matters because **once the
+screen locks, macOS ignores synthetic input** — so stayup holds the display awake
+while active, which is what lets you stay green even when you walk away.
 
 ## 🤝 Contributing
 

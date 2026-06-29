@@ -2,6 +2,19 @@
 
 All notable changes to stayup are documented here.
 
+## [1.0.1] — 2026-06-29
+
+### Fixed
+- **Never show green when the nudge isn't actually working.** `AXIsProcessTrusted()`
+  can report Accessibility as granted for a re-signed build whose signature no longer
+  matches the recorded grant — so the button went green and the screen stayed on while
+  macOS silently dropped the cursor nudge, leaving you shown as **Away**. stayup now
+  verifies each nudge actually reset the idle clock; if it didn't, it shows a clear
+  **"Not working — re-grant Accessibility"** warning (yellow icon, amber button) instead
+  of a misleading green.
+
+[1.0.1]: https://github.com/orzazade/stayup/releases/tag/v1.0.1
+
 ## [1.0.0] — 2026-06-26
 
 First public release.

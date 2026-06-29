@@ -1,6 +1,6 @@
 cask "stayup" do
-  version "1.0.0"
-  sha256 "9f3b3b44045bd224f8e8ec4c4faa0053a1de3b9d3ab7255e16c134844b5fbb40"
+  version "1.0.1"
+  sha256 "c07db1e5babc8f1ffb686107016a0f28c6fa1bdac406d63614db183b2efb5e95"
 
   url "https://github.com/orzazade/stayup/releases/download/v#{version}/stayup-#{version}.zip"
   name "stayup"

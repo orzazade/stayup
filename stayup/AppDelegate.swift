@@ -87,6 +87,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let state: String
         if !controller.isTrusted {
             name = "exclamationmark.circle.fill"; color = .systemYellow; state = "setup needed"
+        } else if controller.isNotWorking {
+            name = "exclamationmark.circle.fill"; color = .systemYellow; state = "not working — re-grant access"
         } else if controller.isActive {
             name = "power.circle.fill"; color = .systemGreen; state = "active"
         } else {

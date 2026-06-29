@@ -41,6 +41,13 @@ final class ActivityController: ObservableObject {
     @Published private(set) var timerEnd: Date?
     @Published private(set) var idleSeconds: Int = 0
     @Published private(set) var isTrusted: Bool = PermissionManager.isTrusted()
+    /// True when we're firing nudges but they're provably not landing (the idle
+    /// clock doesn't reset). This happens when `AXIsProcessTrusted()` reports
+    /// granted but the kernel still drops the event — e.g. a re-signed build
+    /// whose cdhash no longer matches the recorded Accessibility grant. The
+    /// power assertion needs no permission and keeps holding, so without this
+    /// check the user sees a green button while actually showing Away.
+    @Published private(set) var nudgeBlocked: Bool = false
     @Published var duration: Duration {
         didSet {
             UserDefaults.standard.set(duration.rawValue, forKey: "durationChoice")
@@ -50,6 +57,12 @@ final class ActivityController: ObservableObject {
 
     private nonisolated(unsafe) var timer: Timer?
     private var notifiedExpiry = false
+
+    // Nudge self-verification: a working nudge resets the idle clock toward 0.
+    // If after firing it the clock stayed put, the event was dropped.
+    private var awaitingNudgeVerify = false
+    private var idleAtNudge = 0
+    private var nudgeFailureStreak = 0
 
     // Power assertion (keep the screen on — and Mac awake — while Active, so it
     // never locks and the nudge keeps you green even when you step away).
@@ -79,6 +92,7 @@ final class ActivityController: ObservableObject {
             timerEnd = nil
         }
         notifiedExpiry = false
+        resetNudgeVerification()
         persist()
         reconcilePowerAssertion()
     }
@@ -86,6 +100,7 @@ final class ActivityController: ObservableObject {
     func pause() {
         mode = .paused
         timerEnd = nil
+        resetNudgeVerification()
         persist()
         reconcilePowerAssertion()
     }
@@ -106,9 +121,12 @@ final class ActivityController: ObservableObject {
     }
 
     var menuBarSymbol: String {
-        if !isTrusted { return "exclamationmark.circle" }
+        if !isTrusted || (isActive && nudgeBlocked) { return "exclamationmark.circle" }
         return isActive ? "power.circle.fill" : "power.circle"
     }
+
+    /// Active, but the nudge is provably not landing — show a warning, not green.
+    var isNotWorking: Bool { isActive && nudgeBlocked }
 
     // MARK: Settings (read live from UserDefaults; the UI writes them via @AppStorage)
     private var idleThreshold: Int {
@@ -135,14 +153,41 @@ final class ActivityController: ObservableObject {
         isTrusted = PermissionManager.isTrusted()
         idleSeconds = Int(IdleMonitor.idleSeconds())
 
+        verifyLastNudge()
+
         if expireIfNeeded() { return }
 
         reconcilePowerAssertion()
 
         guard shouldNudgeNow() else { return }
         if idleSeconds >= idleThreshold {
+            idleAtNudge = idleSeconds
             ActivityInjector.nudge()
+            awaitingNudgeVerify = true
         }
+    }
+
+    /// Confirm the previous tick's nudge actually moved the needle. A working
+    /// nudge resets the idle clock, so by this tick `idleSeconds` should have
+    /// dropped well below where it was when we fired. If it instead held or
+    /// climbed, the event was dropped (granted-but-cdhash-mismatch, or macOS
+    /// hardening). Require two strikes so one slow/jittery tick can't false-alarm.
+    private func verifyLastNudge() {
+        guard awaitingNudgeVerify else { return }
+        awaitingNudgeVerify = false
+        if idleSeconds >= idleAtNudge {
+            nudgeFailureStreak += 1
+        } else {
+            nudgeFailureStreak = 0
+        }
+        nudgeBlocked = nudgeFailureStreak >= 2
+    }
+
+    private func resetNudgeVerification() {
+        awaitingNudgeVerify = false
+        idleAtNudge = 0
+        nudgeFailureStreak = 0
+        nudgeBlocked = false
     }
 
     @discardableResult

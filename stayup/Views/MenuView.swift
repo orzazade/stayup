@@ -8,6 +8,7 @@ struct MenuView: View {
 
     private var look: PowerButton.Look {
         if !controller.isTrusted { return .setup }
+        if controller.isNotWorking { return .setup }   // active but nudge dropped
         return controller.isActive ? .active : .paused
     }
 
@@ -81,9 +82,11 @@ struct MenuView: View {
             PowerButton(look: look) { controller.toggle() }
                 .padding(.top, 2)
 
-            Text(controller.isActive ? "Active" : "Paused")
+            Text(controller.isNotWorking ? "Not working"
+                 : (controller.isActive ? "Active" : "Paused"))
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(controller.isActive ? .primary : .secondary)
+                .foregroundStyle(controller.isNotWorking ? Color.orange
+                                 : (controller.isActive ? .primary : .secondary))
                 .padding(.top, 4)
 
             statusLine
@@ -113,7 +116,14 @@ struct MenuView: View {
 
     @ViewBuilder
     private var statusLine: some View {
-        if !controller.isActive {
+        if controller.isNotWorking {
+            Button { controller.requestPermission() } label: {
+                Text("Nudge blocked — re-grant Accessibility")
+                    .foregroundStyle(Color.orange)
+                    .underline()
+            }
+            .buttonStyle(.plain)
+        } else if !controller.isActive {
             Text("You'll show as Away when idle")
         } else if let remaining = controller.timedRemaining {
             Text("Active for \(timeString(Int(remaining)))")

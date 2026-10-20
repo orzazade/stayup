@@ -22,3 +22,5 @@ Package.resolved
 dist/*.zip
 dist/*.app/
 dist/icon-master.png
+CLAUDE.md
+AGENTS.md
